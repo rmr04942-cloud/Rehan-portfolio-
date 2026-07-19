@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REEL — Video Editor Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0C0E;
+    --bg-alt:#141519;
+    --line:#25272C;
+    --text:#EDEAE4;
+    --muted:#8A8D93;
+    --rec:#E4402C;
+    --amber:#F2A93B;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  h1,h2,h3{font-family:'Bebas Neue',sans-serif; letter-spacing:0.02em; font-weight:400;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  a{color:inherit; text-decoration:none;}
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 6%;
+    background:linear-gradient(to bottom, rgba(11,12,14,0.95), rgba(11,12,14,0));
+  }
+  .logo{font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:0.05em; display:flex; align-items:center; gap:8px;}
+  .logo .dot{width:9px;height:9px;border-radius:50%;background:var(--rec); box-shadow:0 0 8px var(--rec); animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+  .navlinks{display:flex; gap:32px; font-size:0.85rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em;}
+  .navlinks a:hover{color:var(--text);}
+  @media (max-width:700px){.navlinks{display:none;}}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+    padding:0 6%; position:relative;
+  }
+  .timecode-row{
+    display:flex; align-items:center; gap:14px; margin-bottom:28px;
+    color:var(--amber); font-size:0.95rem;
+  }
+  .rec-badge{display:flex;align-items:center;gap:6px;color:var(--rec); border:1px solid var(--rec); padding:3px 10px; border-radius:2px; font-size:0.75rem; letter-spacing:0.1em;}
+  .rec-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--rec); animation:pulse 1.8s infinite;}
+
+  .hero h1{
+    font-size:clamp(3.2rem, 10vw, 8.5rem);
+    line-height:0.9;
+    text-transform:uppercase;
+  }
+  .hero h1 .accent{color:var(--rec);}
+  .hero-sub{
+    max-width:520px; color:var(--muted); font-size:1.05rem; line-height:1.6; margin-top:24px;
+  }
+  .hero-cta{
+    margin-top:44px; display:flex; gap:18px; align-items:center; flex-wrap:wrap;
+  }
+  .btn{
+    padding:14px 28px; border-radius:2px; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.08em; font-weight:600;
+    transition:transform 0.2s ease, background 0.2s ease;
+    display:inline-block;
+  }
+  .btn-primary{background:var(--rec); color:#fff;}
+  .btn-primary:hover{transform:translateY(-2px); background:#ff4d34;}
+  .btn-ghost{border:1px solid var(--line); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--text);}
+
+  /* timeline ruler */
+  .ruler{
+    position:absolute; bottom:60px; left:6%; right:6%;
+    display:flex; align-items:flex-end; gap:0; height:40px;
+    border-bottom:1px solid var(--line);
+  }
+  .tick{flex:1; border-left:1px solid var(--line); height:10px; position:relative;}
+  .tick.major{height:20px; border-left:1px solid #3a3d44;}
+  .playhead{
+    position:absolute; bottom:-1px; width:2px; height:24px; background:var(--amber);
+    animation:scrub 8s linear infinite;
+  }
+  @keyframes scrub{
+    0%{left:0%;} 100%{left:96%;}
+  }
+  @media (max-width:700px){.ruler{display:none;}}
+
+  /* ---------- Sprocket divider ---------- */
+  .sprocket{
+    display:flex; justify-content:space-between; padding:0 6%;
+    background:var(--bg-alt); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .sprocket span{
+    width:10px; height:16px; background:var(--bg); margin:8px 0; border-radius:2px;
+  }
+  .sprocket-row{display:flex; gap:14px; overflow:hidden; width:100%; padding:0;}
+
+  /* ---------- Section shared ---------- */
+  section{padding:110px 6%;}
+  .eyebrow{
+    color:var(--rec); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.15em; margin-bottom:14px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .section-title{font-size:clamp(2.2rem, 5vw, 3.4rem); text-transform:uppercase; margin-bottom:50px; max-width:700px;}
+
+  /* ---------- Services / niches ---------- */
+  .services{background:var(--bg-alt);}
+  .service-list{border-top:1px solid var(--line);}
+  .service-row{
+    display:flex; align-items:center; gap:30px; padding:26px 0; border-bottom:1px solid var(--line);
+    transition:padding-left 0.25s ease;
+  }
+  .service-row:hover{padding-left:14px; background:rgba(228,64,44,0.04);}
+  .service-num{font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:0.9rem; width:36px;}
+  .service-name{font-family:'Bebas Neue',sans-serif; font-size:1.7rem; flex:1;}
+  .service-tag{color:var(--muted); font-size:0.85rem; max-width:280px; text-align:right;}
+  @media (max-width:700px){
+    .service-row{flex-wrap:wrap;}
+    .service-tag{text-align:left; max-width:100%;}
+  }
+
+  /* ---------- Portfolio ---------- */
+  .work-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(320px,1fr)); gap:28px;
+  }
+  .work-card{
+    border:1px solid var(--line); background:var(--bg-alt); border-radius:4px; overflow:hidden;
+  }
+  .work-frame{
+    aspect-ratio:16/9; background:#000; display:flex; align-items:center; justify-content:center;
+    position:relative; color:var(--muted); font-size:0.8rem; font-family:'IBM Plex Mono',monospace;
+    background-image:
+      linear-gradient(45deg, #17181c 25%, transparent 25%),
+      linear-gradient(-45deg, #17181c 25%, transparent 25%);
+    background-size:20px 20px;
+  }
+  .work-frame iframe{width:100%; height:100%; border:0; position:relative; z-index:2;}
+  .work-frame video{width:100%; height:100%; object-fit:cover; position:relative; z-index:2; background:#000;}
+  .work-frame .placeholder{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:20px; text-align:center;
+  }
+  .work-meta{padding:20px 22px;}
+  .work-title{font-family:'Bebas Neue',sans-serif; font-size:1.4rem; margin-bottom:6px;}
+  .work-desc{color:var(--muted); font-size:0.88rem; line-height:1.5;}
+  .work-tag{
+    display:inline-block; margin-top:12px; font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+    color:var(--amber); border:1px solid rgba(242,169,59,0.3); padding:3px 8px; border-radius:2px;
+  }
+
+  /* ---------- About ---------- */
+  .about{background:var(--bg-alt);}
+  .about-grid{display:grid; grid-template-columns:1.2fr 1fr; gap:60px;}
+  .about-text{color:var(--muted); line-height:1.75; font-size:1.02rem;}
+  .about-text p{margin-bottom:18px;}
+  .stat-block{display:grid; gap:24px;}
+  .stat{border-left:2px solid var(--rec); padding-left:18px;}
+  .stat .num{font-family:'Bebas Neue',sans-serif; font-size:2.6rem; color:var(--text);}
+  .stat .label{color:var(--muted); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;}
+  @media (max-width:800px){.about-grid{grid-template-columns:1fr;}}
+
+  /* ---------- Contact ---------- */
+  .contact{text-align:center;}
+  .contact h2{font-size:clamp(2.4rem,7vw,5rem); text-transform:uppercase; margin-bottom:20px;}
+  .contact p{color:var(--muted); max-width:480px; margin:0 auto 36px;}
+  footer{
+    padding:36px 6%; border-top:1px solid var(--line); display:flex; justify-content:space-between;
+    color:var(--muted); font-size:0.8rem; font-family:'IBM Plex Mono',monospace;
+  }
+  @media (max-width:600px){footer{flex-direction:column; gap:10px; text-align:center;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span class="dot"></span>REEL/CUT</div>
+  <div class="navlinks">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="timecode-row mono">
+    <span class="rec-badge"><span class="dot"></span>REC</span>
+    <span id="timecode">00:00:00:00</span>
+  </div>
+  <h1>Cuts that<br>keep them<br><span class="accent">watching.</span></h1>
+  <p class="hero-sub">Freelance video editor specializing in short-form, YouTube, and podcast content. I turn raw footage into edits people actually finish watching.</p>
+  <div class="hero-cta">
+    <a href="#work" class="btn btn-primary">See the work</a>
+    <a href="#contact" class="btn btn-ghost">Get in touch</a>
+  </div>
+
+  <div class="ruler">
+    <div class="tick major"></div>
+    <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+    <div class="tick major"></div>
+    <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+    <div class="tick major"></div>
+    <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+    <div class="tick major"></div>
+    <div class="playhead"></div>
+  </div>
+</section>
+
+<div class="sprocket">
+  <div class="sprocket-row" id="sprocketRow"></div>
+</div>
+
+<section id="services" class="services">
+  <div class="eyebrow">// 01 — What I Edit</div>
+  <h2 class="section-title">Built for the formats clients actually need.</h2>
+  <div class="service-list">
+    <div class="service-row">
+      <span class="service-num mono">01</span>
+      <span class="service-name">Short-form &amp; Reels</span>
+      <span class="service-tag">Fast cuts, hooks, captions for TikTok/Reels/Shorts</span>
+    </div>
+    <div class="service-row">
+      <span class="service-num mono">02</span>
+      <span class="service-name">YouTube &amp; Vlog Edits</span>
+      <span class="service-tag">Jump cuts, B-roll, pacing for long-form talking-head content</span>
+    </div>
+    <div class="service-row">
+      <span class="service-num mono">03</span>
+      <span class="service-name">Podcast Clipping</span>
+      <span class="service-tag">Turning long episodes into shareable highlight reels</span>
+    </div>
+    <div class="service-row">
+      <span class="service-num mono">04</span>
+      <span class="service-name">Corporate &amp; Promo</span>
+      <span class="service-tag">Clean edits with titles, logo animation, brand-safe pacing</span>
+    </div>
+  </div>
+</section>
+
+<div class="sprocket">
+  <div class="sprocket-row" id="sprocketRow2"></div>
+</div>
+
+<section id="work">
+  <div class="eyebrow">// 02 — Selected Work</div>
+  <h2 class="section-title">A few edits, start to finish.</h2>
+  <div class="work-grid">
+
+    <div class="work-card">
+      <div class="work-frame">
+        <video controls preload="metadata" poster="videos/poster-01.jpg">
+          <source src="videos/edit-01-color-reveal.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="work-meta">
+        <div class="work-title">Practice Edit — Color Grade & Reveal</div>
+        <div class="work-desc">Before/after color grade with a glow-border reveal transition.</div>
+        <span class="work-tag">PRACTICE EDIT</span>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-frame">
+        <video controls preload="metadata" poster="videos/poster-02.jpg">
+          <source src="videos/edit-02-realestate-reveal.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="work-meta">
+        <div class="work-title">Practice Edit — Reveal Transition</div>
+        <div class="work-desc">Split-frame before/after reveal with animated text callouts.</div>
+        <span class="work-tag">PRACTICE EDIT</span>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-frame">
+        <video controls preload="metadata" poster="videos/poster-03.jpg">
+          <source src="videos/edit-03-raw-edited.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="work-meta">
+        <div class="work-title">Practice Edit — Raw vs. Edited</div>
+        <div class="work-desc">Side-by-side raw/edited comparison with graphic overlay.</div>
+        <span class="work-tag">PRACTICE EDIT</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="about" class="about">
+  <div class="about-grid">
+    <div>
+      <div class="eyebrow">// 03 — About</div>
+      <h2 class="section-title">Editing is where the story actually gets made.</h2>
+      <div class="about-text">
+        <p>I'm a video editor focused on making raw footage watchable — pacing, sound, and structure first, effects second.</p>
+        <p>Every project on this page was cut, graded, and finished by me, start to finish. I'm currently taking on new projects and open to trial edits for the right fit.</p>
+      </div>
+    </div>
+    <div class="stat-block">
+      <div class="stat"><div class="num mono">24H</div><div class="label">Typical turnaround</div></div>
+      <div class="stat"><div class="num mono">3+</div><div class="label">Formats covered</div></div>
+      <div class="stat"><div class="num mono">100%</div><div class="label">Original edits</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="eyebrow">// 04 — Contact</div>
+  <h2>Let's cut<br>something great.</h2>
+  <p>Have footage that needs a story? Send it over — I'll get back to you within a day.</p>
+  <a href="mailto:you@example.com" class="btn btn-primary">you@example.com</a>
+</section>
+
+<footer>
+  <span>© <span id="year"></span> REEL/CUT</span>
+  <span>Based anywhere · Working everywhere</span>
+</footer>
+
+<script>
+  // sprocket holes
+  function fillSprocket(id){
+    const row = document.getElementById(id);
+    const count = 40;
+    for(let i=0;i<count;i++){
+      const s = document.createElement('span');
+      row.appendChild(s);
+    }
+  }
+  fillSprocket('sprocketRow');
+  fillSprocket('sprocketRow2');
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ticking timecode, purely decorative
+  let frame = 0;
+  function pad(n){return n.toString().padStart(2,'0');}
+  function tick(){
+    frame++;
+    const totalSeconds = Math.floor(frame/24);
+    const f = frame % 24;
+    const h = Math.floor(totalSeconds/3600);
+    const m = Math.floor((totalSeconds%3600)/60);
+    const s = totalSeconds%60;
+    document.getElementById('timecode').textContent = `${pad(h)}:${pad(m)}:${pad(s)}:${pad(f)}`;
+    requestAnimationFrame(tick);
+  }
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    requestAnimationFrame(tick);
+  }
+</script>
+
+</body>
+</html>
